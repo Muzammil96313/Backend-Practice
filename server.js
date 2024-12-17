@@ -1,18 +1,19 @@
 const mongoose = require("mongoose");
 const express = require("express");
-const app = express();
 const User = require("./models/User");
 require("dotenv").config();
 
-const DB_URL = process.env.MONGO_URI;
-const PORT = process.env.PORT || 3000;
+const app = express();
+
+// Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// MongoDB Connection
+const DB_URL = process.env.MONGO_URI;
 
 mongoose
-  .connect(DB_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(DB_URL)
   .then(() => {
     console.log("Connected to MongoDB");
   })
@@ -20,12 +21,12 @@ mongoose
     console.error("Error connecting to MongoDB", err);
   });
 
+// Routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
 app.post("/users", async (req, res) => {
-  console.log(req.body);
   try {
     const user = new User(req.body);
     const savedUser = await user.save();
@@ -34,6 +35,7 @@ app.post("/users", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+
 app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -42,12 +44,12 @@ app.get("/users", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-// Update a user by ID
+
 app.put("/users/:id", async (req, res) => {
   try {
     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true, // Return the updated document
-      runValidators: true, // Validate the updated data
+      new: true,
+      runValidators: true,
     });
     if (!updatedUser) return res.status(404).send("User not found");
     res.json(updatedUser);
@@ -55,7 +57,7 @@ app.put("/users/:id", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-// Delete a user by ID
+
 app.delete("/users/:id", async (req, res) => {
   try {
     const deletedUser = await User.findByIdAndDelete(req.params.id);
@@ -66,6 +68,5 @@ app.delete("/users/:id", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+// Export the app for Vercel
+module.exports = app;
