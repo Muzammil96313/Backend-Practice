@@ -14,6 +14,10 @@ mongoose
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use((req, res, next) => {
+  console.log(`${req.method} request to ${req.url}`);
+  next();
+});
 
 // app.get("/", (req, res) => {
 //   res.send("Hello World!");
@@ -24,7 +28,6 @@ app.get("/favicon.png", (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-  const { page = 1, limit = 10 } = req.query; // Defaults: page 1, 10 results
   try {
     const users = await User.find()
       .skip((page - 1) * limit)
@@ -71,4 +74,4 @@ app.post("/", async (req, res) => {
 // app.listen(3000, () => {
 //   console.log("Server is running on port 3000");
 // });
-module.exports = app;
+// module.exports = app;
