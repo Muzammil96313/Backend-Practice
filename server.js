@@ -1,30 +1,29 @@
-const mongoose = require("mongoose");
 const express = require("express");
+const mongoose = require("mongoose");
 const User = require("./models/User");
 require("dotenv").config();
 
 const app = express();
 
+const DB_URL = process.env.MONGO_URI;
+
+mongoose
+  .connect(DB_URL)
+  .then(() => console.log("Connected to MongoDB Atlas"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("Connected to MongoDB");
-  })
-  .catch((err) => {
-    console.error("Error connecting to MongoDB", err);
-  });
-
-// Routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
 app.get("/favicon.png", (req, res) => {
   res.status(204).end(); // Respond with 'No Content'
 });
+
 app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
@@ -66,5 +65,9 @@ app.delete("/users/:id", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
-module.exports = app;
+// module.exports = app;
