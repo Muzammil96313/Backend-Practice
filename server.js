@@ -38,9 +38,10 @@ app.post("/users", async (req, res) => {
 
 app.get("/users", async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().limit(50); // Add a limit to reduce response time
     res.json(users);
   } catch (error) {
+    console.error("Error fetching users:", error); // Log errors
     res.status(500).json({ error: error.message });
   }
 });
