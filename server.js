@@ -25,6 +25,9 @@ mongoose
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+app.get("/favicon.png", (req, res) => {
+  res.status(204).end(); // Respond with 'No Content'
+});
 
 app.post("/users", async (req, res) => {
   try {
