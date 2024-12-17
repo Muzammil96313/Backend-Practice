@@ -29,9 +29,7 @@ app.get("/favicon.png", (req, res) => {
 
 app.get("/", async (req, res) => {
   try {
-    const users = await User.find()
-      .skip((page - 1) * limit)
-      .limit(parseInt(limit));
+    const users = await User.find();
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -71,7 +69,7 @@ app.post("/", async (req, res) => {
 //   }
 // });
 
-// app.listen(3000, () => {
-//   console.log("Server is running on port 3000");
-// });
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
 module.exports = app;
