@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const DB_URL = process.env.MONGO_URI;
 const PORT = process.env.PORT || 3000;
+app.use(express.json());
 
 mongoose
   .connect(DB_URL, {
@@ -24,6 +25,7 @@ app.get("/", (req, res) => {
 });
 
 app.post("/users", async (req, res) => {
+  console.log(req.body);
   try {
     const user = new User(req.body);
     const savedUser = await user.save();
