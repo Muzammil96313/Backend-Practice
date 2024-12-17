@@ -26,15 +26,15 @@ app.get("/favicon.png", (req, res) => {
   res.status(204).end(); // Respond with 'No Content'
 });
 
-app.post("/users", async (req, res) => {
-  try {
-    const user = new User(req.body);
-    const savedUser = await user.save();
-    res.status(201).json(savedUser);
-  } catch (error) {
-    res.status(400).json({ error: error.message });
-  }
-});
+// app.post("/users", async (req, res) => {
+//   try {
+//     const user = new User(req.body);
+//     const savedUser = await user.save();
+//     res.status(201).json(savedUser);
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// });
 
 app.get("/users", async (req, res) => {
   try {
