@@ -25,6 +25,14 @@ app.get("/", (req, res) => {
 app.get("/favicon.png", (req, res) => {
   res.status(204).end(); // Respond with 'No Content'
 });
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.post("/users", async (req, res) => {
   try {
@@ -33,16 +41,6 @@ app.post("/users", async (req, res) => {
     res.status(201).json(savedUser);
   } catch (error) {
     res.status(400).json({ error: error.message });
-  }
-});
-
-app.get("/users", async (req, res) => {
-  try {
-    const users = await User.find().limit(50); // Add a limit to reduce response time
-    res.json(users);
-  } catch (error) {
-    console.error("Error fetching users:", error); // Log errors
-    res.status(500).json({ error: error.message });
   }
 });
 
