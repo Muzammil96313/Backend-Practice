@@ -6,9 +6,8 @@ require("dotenv").config();
 const app = express();
 
 const DB_URL = process.env.MONGO_URI;
-
 mongoose
-  .connect(DB_URL)
+  .connect(DB_URL, { connectTimeoutMS: 60000 }) // Extended timeout
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
@@ -25,8 +24,11 @@ app.get("/favicon.png", (req, res) => {
 });
 
 app.get("/users", async (req, res) => {
+  const { page = 1, limit = 10 } = req.query; // Defaults: page 1, 10 results
   try {
-    const users = await User.find();
+    const users = await User.find()
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -65,9 +67,5 @@ app.delete("/users/:id", async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-// const PORT = process.env.PORT || 3000;
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
 
 module.exports = app;
