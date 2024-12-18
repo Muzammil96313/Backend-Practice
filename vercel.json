@@ -4,8 +4,7 @@
   "routes": [
     {
       "src": "/.*",
-      "dest": "/",
-      "method": ["HEAD", "GET", "POST", "PUT", "DELETE", "OPTIONS"]
+      "dest": "/"
     }
   ]
 }
