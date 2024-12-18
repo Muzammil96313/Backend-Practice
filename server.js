@@ -14,6 +14,8 @@ mongoose
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.get("/favicon.ico", (req, res) => res.status(204).end());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
