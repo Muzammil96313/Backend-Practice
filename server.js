@@ -38,6 +38,8 @@ app.post("/users", async (req, res) => {
   }
 });
 
+module.exports = app;
+
 // app.put("/users/:id", async (req, res) => {
 //   try {
 //     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
@@ -64,5 +66,3 @@ app.post("/users", async (req, res) => {
 // app.listen(3000, () => {
 //   console.log("Server is running on port 3000");
 // });
-
-module.exports = app;
