@@ -1,35 +1,42 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const User = require("./models/User");
 require("dotenv").config();
 
 const app = express();
 
+// MongoDB connection
 const DB_URL = process.env.MONGO_URI;
 mongoose
-  .connect(DB_URL, { connectTimeoutMS: 60000 }) // Extended timeout
+  .connect(DB_URL, {
+    maxPoolSize: 10, // Optimized connection pooling for serverless
+  })
   .then(() => console.log("Connected to MongoDB Atlas"))
   .catch((err) => console.error("Error connecting to MongoDB:", err));
 
 // Middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
-app.get("/favicon.ico", (req, res) => res.status(204).end());
 
+// Routes
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const User = require("./models/User");
+
+// Fetch users with pagination
 app.get("/users", async (req, res) => {
+  const { page = 1, limit = 10 } = req.query; // Default page=1, limit=10
   try {
-    const users = await User.find();
+    const users = await User.find()
+      .skip((page - 1) * limit)
+      .limit(parseInt(limit));
     res.json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+// Add a new user
 app.post("/users", async (req, res) => {
   try {
     const user = new User(req.body);
@@ -40,31 +47,5 @@ app.post("/users", async (req, res) => {
   }
 });
 
+// Export app for serverless
 module.exports = app;
-
-// app.put("/users/:id", async (req, res) => {
-//   try {
-//     const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-//       new: true,
-//       runValidators: true,
-//     });
-//     if (!updatedUser) return res.status(404).send("User not found");
-//     res.json(updatedUser);
-//   } catch (error) {
-//     res.status(400).json({ error: error.message });
-//   }
-// });
-
-// app.delete("/users/:id", async (req, res) => {
-//   try {
-//     const deletedUser = await User.findByIdAndDelete(req.params.id);
-//     if (!deletedUser) return res.status(404).send("User not found");
-//     res.json({ message: "User deleted successfully" });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// });
-
-// app.listen(3000, () => {
-//   console.log("Server is running on port 3000");
-// });
