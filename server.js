@@ -14,17 +14,9 @@ mongoose
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-  console.log(`${req.method} request to ${req.url}`);
-  next();
-});
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
-});
-
-app.get("/favicon.png", (req, res) => {
-  res.status(204).end(); // Respond with 'No Content'
 });
 
 app.get("/users", async (req, res) => {
