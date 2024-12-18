@@ -19,15 +19,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
 
 app.get("/favicon.png", (req, res) => {
   res.status(204).end(); // Respond with 'No Content'
 });
 
-app.get("/", async (req, res) => {
+app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -36,7 +36,7 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.post("/", async (req, res) => {
+app.post("/users", async (req, res) => {
   try {
     const user = new User(req.body);
     const savedUser = await user.save();
@@ -69,7 +69,7 @@ app.post("/", async (req, res) => {
 //   }
 // });
 
-// app.listen(3000, () => {
-//   console.log("Server is running on port 3000");
-// });
-module.exports = app;
+app.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
+// module.exports = app;
